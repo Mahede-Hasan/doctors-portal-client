@@ -20,7 +20,7 @@ const HomeContact = () => {
                 <input className='w-96 py-2 rounded pl-2 mb-0.25 mx-auto block' type="text" name="subject" placeholder='Subject' required id="" />
                 <br />
                 <textarea className='w-96 py-2 rounded pl-2 mb-0.25 mx-auto block' placeholder='Your Message' name="" id="" cols="40" rows="5" required ></textarea>
-                <button className="btn btn-secondary bg-gradient-to-r from-primary to-secondary text-white bold uppercase mx-auto block my-6  px-6 text-lg">Get Started</button>
+                <button className="btn btn-secondary bg-gradient-to-r from-primary to-secondary text-white bold uppercase mx-auto block my-6  px-6 text-lg">Submit</button>
             </form>
             
         </section>
