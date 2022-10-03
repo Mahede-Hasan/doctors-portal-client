@@ -10,13 +10,13 @@ const BookingModal = ({ treatment, date, setTreatment }) => {
     return (
         <div>
             <input type="checkbox" id="booking-modal" className="modal-toggle" />
-            <div className="modal modal-bottom sm:modal-middle">
+            <div className="modal modal-bottom lg:modal-middle sm:modal-middle">
                 <div className="modal-box ">
                     <label htmlFor="booking-modal" className="btn btn-sm btn-circle mt-4 mr-4 absolute right-2 top-2">✕</label>
-                    <h3 className="font-bold text-secondary text-lg py-4">{name}</h3>
+                    <h3 className="font-bold text-secondary ml-14 text-lg py-4">{name}</h3>
                     <form 
                     onSubmit={handleBooking}
-                    className='grid grid-cols-1 gap-4'
+                    className='grid grid-cols-1 gap-4 ml-14'
                     >
                     <input type="text" disabled value={format(date, 'PP')} className="input input-bordered w-full max-w-xs" />
                     <select className="select select-bordered w-full max-w-xs">

@@ -1,53 +1,68 @@
 import React from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading';
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const SignUp = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [
-        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
         user,
         loading,
         error,
-    ] = useSignInWithEmailAndPassword(auth);
-    let location = useLocation();
-    let navigate = useNavigate();
-
-    let from = location.state?.from?.pathname || '/';
+    ] = useCreateUserWithEmailAndPassword(auth);
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+    const navigate = useNavigate()
 
     if (gUser || user) {
-        navigate(from, { replace: true });
+        console.log(gUser, user);
     }
 
-    if (loading || gLoading) {
+    if (loading || gLoading || updating) {
         return <Loading></Loading>
     }
 
     let errorElement;
-    if (gError || error) {
-        errorElement = <p>{error?.message || gError?.message}</p>
+    if (gError || error || updateError) {
+        errorElement = <p>{error?.message || gError?.message || updateError?.message}</p>
     }
 
-
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
-        signInWithEmailAndPassword(data.email, data.password);
-
-
+        await createUserWithEmailAndPassword(data.email, data.password);
+        await updateProfile({ displayName: data.name });
+        navigate("/appointment")
     };
-
 
     return (
         <div className='my-8 flex justify-center items-center'>
             <div className="card w-96  bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <h2 className="text-center font-bold text-4xl">Login</h2>
+                    <h2 className="text-center font-bold text-4xl">SignUp</h2>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Name</span>
+                            </label>
+                            <input type="text"
+                                name='name'
+                                placeholder="Enter Name"
+                                className="input input-bordered w-full max-w-xs"
+                                {...register("name", {
+                                    required: {
+                                        value: true,
+                                        message: 'Name is required'
+                                    }
+
+                                })}
+                            />
+                            <label className="label">
+                                {errors.name?.type === 'required' && <span className="label-text-alt text-red-500">{errors.name.message}</span>}
+                            </label>
+
                             <label className="label">
                                 <span className="label-text">Email</span>
                             </label>
@@ -92,15 +107,12 @@ const Login = () => {
                             />
 
                             <label className="label">
-
                                 {errors.password?.type === 'required' && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
                                 {errors.password?.type === 'minLength' && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
                             </label>
-                            <p className='text-sm pb-2'>Forget password <Link to='/' className='text-secondary pl-2'>Reset Password</Link></p>
-
                             {errorElement}
-                            <button className='btn btn-accent text-white font-bold'>Login</button>
-                            <p className='text-sm pt-2'>New to Doctor Service? <Link to='/signup' className='text-secondary pl-2'>SignUp</Link> </p>
+                            <button className='btn btn-accent text-white font-bold'>SignUp</button>
+                            <p className='text-sm pt-2'>Already have an account? <Link to='/login' className='text-secondary pl-2'>Login</Link> </p>
                         </div>
                     </form>
                     <div className="divider">OR</div>
@@ -114,4 +126,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default SignUp;

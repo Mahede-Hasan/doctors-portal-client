@@ -1,12 +1,21 @@
+import { signOut } from 'firebase/auth';
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/logo.png'
+import auth from '../../firebase.init';
 
 const Navbar = () => {
+    const [user, loading, error] = useAuthState(auth);
+const navigate = useNavigate()
     let activeStyle = {
         backgroundColor: '#3A4256',
         color: 'white'
     };
+
+    const logOut = ()=>{
+        signOut(auth)
+    }
 
     const navMenu = <>
             <NavLink className='px-4 py-2 font-semibold text-base' to='/home' style={({ isActive }) =>
@@ -24,9 +33,11 @@ const Navbar = () => {
                     <NavLink className='px-4 py-2 font-semibold text-base' to='/contactus' style={({ isActive }) =>
                         isActive ? activeStyle : undefined
                     }>Contact Us</NavLink>
+                    {user ?
+                     <NavLink onClick={logOut} className='px-4 py-2 font-semibold text-base border' >SignOut</NavLink>:
                     <NavLink className='px-4 py-2 font-semibold text-base' to='/login' style={({ isActive }) =>
                         isActive ? activeStyle : undefined
-                    }>Login</NavLink>
+                    }>Login</NavLink>}
     </>
     return (
         <div className="navbar bg-slate-100">

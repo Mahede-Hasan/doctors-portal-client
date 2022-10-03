@@ -4,7 +4,7 @@ const ServiceAvailable = ({ service,setTreatment }) => {
     const { name, slots } = service;
     return (
         <div>
-            <div className="card lg:max-w-lg bg-base-100 shadow-xl">
+            <div className="card my-6 lg:max-w-lg bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="card-title text-secondary">{name}</h2>
                     <p>{
