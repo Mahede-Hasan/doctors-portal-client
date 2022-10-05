@@ -1,11 +1,13 @@
-import React from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import React, { useEffect, useRef } from 'react';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading';
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = () => {
+    const inputEmail = useRef('')
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [
@@ -17,27 +19,42 @@ const Login = () => {
     let location = useLocation();
     let navigate = useNavigate();
 
+    const [sendPasswordResetEmail, sending, resetError] = useSendPasswordResetEmail(auth);
+
     let from = location.state?.from?.pathname || '/';
 
-    if (gUser || user) {
-        navigate(from, { replace: true });
+    
+
+    const handleReset = async () => {
+        const email = inputEmail.current.value;
+        console.log(email)
+        if (email) {
+            await sendPasswordResetEmail(email);
+            toast('sent email')
+        }
+        else{
+            toast('please type your email')
+        }
     }
 
-    if (loading || gLoading) {
+    useEffect(() => {
+        if (gUser || user) {
+            navigate(from, { replace: true });
+        }
+    }, [gUser, user, from, navigate])
+
+    if (loading || gLoading || sending) {
         return <Loading></Loading>
     }
 
     let errorElement;
-    if (gError || error) {
-        errorElement = <p>{error?.message || gError?.message}</p>
+    if (gError || error || resetError) {
+        errorElement = <p className='text-red-500'>{error?.message || gError?.message || resetError?.message}</p>
     }
 
 
     const onSubmit = (data) => {
-        console.log(data)
         signInWithEmailAndPassword(data.email, data.password);
-
-
     };
 
 
@@ -52,6 +69,7 @@ const Login = () => {
                                 <span className="label-text">Email</span>
                             </label>
                             <input type="email"
+                                ref={inputEmail}
                                 name='email'
                                 placeholder="Enter Email"
                                 className="input input-bordered w-full max-w-xs"
@@ -96,7 +114,7 @@ const Login = () => {
                                 {errors.password?.type === 'required' && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
                                 {errors.password?.type === 'minLength' && <span className="label-text-alt text-red-500">{errors.password.message}</span>}
                             </label>
-                            <p className='text-sm pb-2'>Forget password <Link to='/' className='text-secondary pl-2'>Reset Password</Link></p>
+                            <p className='text-sm pb-2'>Forget password <Link onClick={handleReset} to='/' className='text-secondary pl-2'>Reset Password</Link></p>
 
                             {errorElement}
                             <button className='btn btn-accent text-white font-bold'>Login</button>
