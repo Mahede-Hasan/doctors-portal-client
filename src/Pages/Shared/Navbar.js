@@ -6,7 +6,7 @@ import logo from '../../assets/logo/logo.png'
 import auth from '../../firebase.init';
 
 const Navbar = () => {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const navigate = useNavigate()
     let activeStyle = {
         backgroundColor: '#3A4256',
@@ -15,6 +15,7 @@ const Navbar = () => {
 
     const logOut = () => {
         signOut(auth)
+        localStorage.removeItem('accessToken');
     }
 
     const navMenu = <>

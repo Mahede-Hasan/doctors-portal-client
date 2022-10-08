@@ -5,6 +5,7 @@ import Loading from '../../Shared/Loading';
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import useToken from '../../../hooks/useToken';
 
 const Login = () => {
     const inputEmail = useRef('')
@@ -20,7 +21,7 @@ const Login = () => {
     let navigate = useNavigate();
 
     const [sendPasswordResetEmail, sending, resetError] = useSendPasswordResetEmail(auth);
-
+const [token] = useToken(gUser || user)
     let from = location.state?.from?.pathname || '/';
 
     
@@ -38,10 +39,10 @@ const Login = () => {
     }
 
     useEffect(() => {
-        if (gUser || user) {
+        if (token) {
             navigate(from, { replace: true });
         }
-    }, [gUser, user, from, navigate])
+    }, [token, from, navigate])
 
     if (loading || gLoading || sending) {
         return <Loading></Loading>

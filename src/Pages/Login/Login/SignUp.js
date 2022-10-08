@@ -3,8 +3,9 @@ import { useCreateUserWithEmailAndPassword, useSendEmailVerification, useSignInW
 import auth from '../../../firebase.init';
 import Loading from '../../Shared/Loading';
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import useToken from '../../../hooks/useToken';
 
 const SignUp = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
@@ -18,9 +19,10 @@ const SignUp = () => {
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const navigate = useNavigate()
     const [sendEmailVerification, sending] = useSendEmailVerification(auth);
+  const [token] = useToken(gUser || user)
 
-    if (gUser || user) {
-        console.log(gUser, user);
+    if (token) {
+       navigate('/appointment')
     }
 
     if (loading || gLoading || updating || sending) {
@@ -33,12 +35,10 @@ const SignUp = () => {
     }
 
     const onSubmit = async (data) => {
-        console.log(data)
         await createUserWithEmailAndPassword(data.email, data.password);
         await updateProfile({ displayName: data.name });
         await sendEmailVerification();
         toast('sent email')
-        navigate("/")
     };
 
     return (

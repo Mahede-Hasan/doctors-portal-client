@@ -1,7 +1,12 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import useAdmin from '../../hooks/useAdmin';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../../firebase.init';
 
 const Dashboard = () => {
+    const [user] = useAuthState(auth)
+    const [admin] = useAdmin(user)
     let activeStyle = {
         backgroundColor: 'lightgray',
     };
@@ -11,7 +16,7 @@ const Dashboard = () => {
             <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
                 {/* <!-- Page content here --> */}
-                <h1 className='text-5xl font-bold text-blue-500 pt-4'>Dashboard</h1>
+                <h1 className='text-5xl font-bold text-blue-500 pt-4 pl-4'>Dashboard</h1>
                 <Outlet></Outlet>
 
             </div>
@@ -28,6 +33,9 @@ const Dashboard = () => {
                     <li><NavLink to='/dashboard/history' className='mb-2 text-black font-bold' style={({ isActive }) =>
                         isActive ? activeStyle : undefined
                     }>Treatment History</NavLink></li>
+                    {admin && <li><NavLink to='/dashboard/user' className='mb-2 text-black font-bold' style={({ isActive }) =>
+                        isActive ? activeStyle : undefined
+                    }>All User</NavLink></li>}
                 </ul>
 
             </div>
