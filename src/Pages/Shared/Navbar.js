@@ -22,9 +22,6 @@ const Navbar = () => {
         <NavLink className='px-4 py-2 font-semibold text-base' to='/home' style={({ isActive }) =>
             isActive ? activeStyle : undefined
         }>Home</NavLink>
-        <NavLink className='px-4 py-2 font-semibold text-base' to='/about' style={({ isActive }) =>
-            isActive ? activeStyle : undefined
-        }>About</NavLink>
         <NavLink className='px-4 py-2 font-semibold text-base' to='/appointment' style={({ isActive }) =>
             isActive ? activeStyle : undefined
         }>Appointment</NavLink>
@@ -34,6 +31,9 @@ const Navbar = () => {
         <NavLink className='px-4 py-2 font-semibold text-base' to='/contactus' style={({ isActive }) =>
             isActive ? activeStyle : undefined
         }>Contact Us</NavLink>
+        <NavLink className='px-4 py-2 font-semibold text-base' to='/about' style={({ isActive }) =>
+            isActive ? activeStyle : undefined
+        }>About</NavLink>
         {
             user && <NavLink className='px-4 py-2 font-semibold text-base' to='/dashboard' style={({ isActive }) =>
                 isActive ? activeStyle : undefined

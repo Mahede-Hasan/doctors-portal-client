@@ -1,39 +1,42 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import Loading from '../Shared/Loading';
-import UsersRow from './UsersRow';
+import DoctorRow from './DoctorRow';
 
-const Users = () => {
-    const { data: users, isLoading, refetch } = useQuery('users', () => fetch('https://shielded-plains-83097.herokuapp.com/user', {
-        method: 'GET',
+const ManageDoctors = () => {
+
+    const { data: doctors, isLoading, refetch } = useQuery('doctors', () => fetch('https://shielded-plains-83097.herokuapp.com/doctor', {
         headers: {
             authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
     }).then(res => res.json()));
+
     if (isLoading) {
         return <Loading></Loading>
     }
+
     return (
         <div>
-            <h2 className="text-2xl pl-4 text-purple-500 py-2">All Users: {users.length}</h2>
+            <h2 className="text-2xl">Manage Doctors: {doctors.length}</h2>
             <div class="overflow-x-auto">
                 <table class="table w-full">
                     <thead>
                         <tr>
                             <th></th>
+                            <th>Avatar</th>
                             <th>Name</th>
-                            <th>Admin</th>
-                            <th>Remove</th>
+                            <th>Specialty</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            users.map((user, index) => <UsersRow
-                                key={user._id}
-                                user={user}
+                            doctors.map((doctor, index) => <DoctorRow
+                                key={doctor._key}
+                                doctor={doctor}
                                 index={index}
                                 refetch={refetch}
-                            ></UsersRow>)
+                            ></DoctorRow>)
                         }
                     </tbody>
                 </table>
@@ -42,4 +45,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default ManageDoctors;
